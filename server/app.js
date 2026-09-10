@@ -19,13 +19,16 @@ const pool = new Pool({
 });
 
 // Routes
-const authRoutes = require('./routes/auth');
-const withdrawRoutes = require('./routes/withdraw');
-app.use('/api/auth', authRoutes);
-app.use('/api/withdraw', withdrawRoutes);
+const authRoutes = require('./routes/auth'); // ✅ Importa il router
+const withdrawRoutes = require('./routes/withdraw'); // ✅ Importa il router
+
+app.use('/api/auth', authRoutes); // ✅ Usa il router
+app.use('/api/withdraw', withdrawRoutes); // ✅ Usa il router
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = { pool }; // ✅ Esporta pool per le route
