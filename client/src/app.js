@@ -198,7 +198,6 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Verifica se l'utente è già loggato
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
