@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './hooks/useAuth';
+import { AuthProvider } // Hook rimosso temporaneamente;
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Withdraw from './pages/Withdraw';
