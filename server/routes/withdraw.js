@@ -26,16 +26,23 @@ router.post('/', authenticateToken, async (req, res) => {
 router.post('/liquidate', authenticateToken, async (req, res) => {
   try {
     const { requestId } = req.body;
+    const userId = req.user.id;
+
+    // Verifica che la richiesta appartenga all'utente
+    const checkRequest = await pool.query(
+      'SELECT * FROM withdrawals WHERE id = $1 AND user_id = $2',
+      [requestId, userId]
+    );
+
+    if (checkRequest.rows.length === 0) {
+      return res.status(403).json({ error: 'Richiesta non trovata o non autorizzata' });
+    }
 
     // Aggiorna lo stato della richiesta a "completed"
     const result = await pool.query(
       'UPDATE withdrawals SET status = $1, liquidation_date = NOW() WHERE id = $2 RETURNING *',
       ['completed', requestId]
     );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Richiesta non trovata' });
-    }
 
     res.json({ success: true, withdrawal: result.rows[0] });
   } catch (error) {
