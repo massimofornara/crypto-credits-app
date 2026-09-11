@@ -22,27 +22,20 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Endpoint per liquidare una richiesta di prelievo
-router.post('/liquidate', authenticateToken, async (req, res) => {
+// Endpoint per liquidare una richiesta di prelievo (temporaneamente senza autenticazione)
+router.post('/liquidate', async (req, res) => {
   try {
     const { requestId } = req.body;
-    const userId = req.user.id;
-
-    // Verifica che la richiesta appartenga all'utente
-    const checkRequest = await pool.query(
-      'SELECT * FROM withdrawals WHERE id = $1 AND user_id = $2',
-      [requestId, userId]
-    );
-
-    if (checkRequest.rows.length === 0) {
-      return res.status(403).json({ error: 'Richiesta non trovata o non autorizzata' });
-    }
 
     // Aggiorna lo stato della richiesta a "completed"
     const result = await pool.query(
       'UPDATE withdrawals SET status = $1, liquidation_date = NOW() WHERE id = $2 RETURNING *',
       ['completed', requestId]
     );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Richiesta non trovata' });
+    }
 
     res.json({ success: true, withdrawal: result.rows[0] });
   } catch (error) {
@@ -51,13 +44,11 @@ router.post('/liquidate', authenticateToken, async (req, res) => {
   }
 });
 
-// Endpoint per ottenere le richieste di prelievo di un utente
-router.get('/', authenticateToken, async (req, res) => {
+// Endpoint per ottenere le richieste di prelievo (temporaneamente senza autenticazione)
+router.get('/', async (req, res) => {
   try {
-    const userId = req.user.id;
     const result = await pool.query(
-      'SELECT * FROM withdrawals WHERE user_id = $1 ORDER BY created_at DESC',
-      [userId]
+      'SELECT * FROM withdrawals ORDER BY created_at DESC'
     );
     res.json({ success: true, withdrawals: result.rows });
   } catch (error) {
