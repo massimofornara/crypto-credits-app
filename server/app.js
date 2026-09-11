@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Route per la root (opzionale)
+app.get('/', (req, res) => {
+  res.send('Backend di Crypto Credits App è online!');
+});
+
 // Routes
 const authRoutes = require('./routes/auth');
 const withdrawRoutes = require('./routes/withdraw');
