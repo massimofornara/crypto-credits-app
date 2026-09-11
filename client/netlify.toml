@@ -5,3 +5,4 @@
 
 [context.production.environment]
   REACT_APP_API_URL = "https://cashout-commerce-b2e6eed56345.herokuapp.com/api"
+  CI = "false"
