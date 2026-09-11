@@ -17,6 +17,14 @@ const authRoutes = require('./routes/auth');
 const withdrawRoutes = require('./routes/withdraw');
 app.use('/api/auth', authRoutes);
 app.use('/api/withdraw', withdrawRoutes);
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ success: true, time: result.rows[0].now });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;
