@@ -1,8 +1,9 @@
+const { pool } = require('../db');
 const express = require('express');
 const router = express.Router(); // ✅ Crea un router Express
 const { kraken } = require('../app');
 const { ethers } = require('ethers');
-const authenticateToken = require('../middlewares/auth');
+const authenticateToken = require('../middleware/auth');
 
 // Withdraw to Kraken or external wallet
 router.post('/', authenticateToken, async (req, res) => {
